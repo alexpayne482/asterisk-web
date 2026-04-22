@@ -8,7 +8,7 @@ export default function EmptyPage() {
     return (
         <PageContainer maxWidth={false} sx={{ marginTop: '-14px', height: '100%' }}>
             <Typography variant="h4" gutterBottom>
-                Welcome to pyWeb
+                Welcome to aStar
             </Typography>
             <Typography variant="body1">
                 This is an empty page.

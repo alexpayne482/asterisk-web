@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Rename the project and update all references to the old name
-templateAppName="pyWeb"
-templateModuleName="pyweb"
+templateAppName="aStar"
+templateModuleName="astar"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <new_app_name>"

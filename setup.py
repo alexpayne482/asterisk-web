@@ -20,7 +20,7 @@ def getRequirements(fileName):
         return [line.strip() for line in rf if line.strip() and not line.startswith("#")]
 
 
-moduleName = "pyweb"
+moduleName = "astar"
 
 setuptools.setup (
     name = moduleName,

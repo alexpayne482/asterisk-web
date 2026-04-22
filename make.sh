@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -ex
 
 appname="astar"
 publish=${PUBLISH:-0}
@@ -27,7 +28,7 @@ fi
 if [ $buildweb -ne 0 ]; then
     pushd web
     echo "Building $appname webapp v$version"
-    sed -i "s/\"version\":.*$/\"version\": \"$version\",/g" ./package.json
+    sed -i '' "s/\"version\":.*$/\"version\": \"$version\",/g" ./package.json
     if [ ! -d node_modules ]; then
         echo "Installing dependencies"
         npm install || { echo "error installing dependencies"; popd; exit 1; }
@@ -42,7 +43,7 @@ fi
 # build python app
 echo "Building $appname app v$version"
 mkdir -p dist
-sed -i "s/__version__ = '.*'/__version__ = '$version'/g" ./$appname/version.py
+sed -i '' "s/__version__ = '.*'/__version__ = '$version'/g" ./$appname/version.py
 python3 setup.py sdist || { echo "error building python app"; exit 1; }
 ln -sf $appname-$version.tar.gz dist/$appname-latest.tar.gz || { echo "error creating symlink for latest version"; exit 1; }
 echo "App build complete: $appname-$version"

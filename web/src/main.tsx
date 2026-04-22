@@ -27,7 +27,7 @@ const Logo = () => (
 
 const branding = {
     logo: <Logo />,
-    title: 'pyWeb',
+    title: 'aStar',
 };
 
 const navigation: Navigation = [
@@ -60,7 +60,7 @@ export function Layout() {
             slots={{
                 sidebarFooter: ({ mini }: SidebarFooterProps) => (
                     <Typography variant="caption" sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                        {mini ? `v${APP_VERSION}` : `© ${new Date().getFullYear()} pyWeb v${APP_VERSION}`}
+                        {mini ? `v${APP_VERSION}` : `© ${new Date().getFullYear()} aStar v${APP_VERSION}`}
                     </Typography>
                 ),
             }}
