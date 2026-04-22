@@ -1,0 +1,6 @@
+requests
+#requests-sse
+#pymongo[srv]
+Flask
+Flask-Cors
+#Flask-PyMongo
