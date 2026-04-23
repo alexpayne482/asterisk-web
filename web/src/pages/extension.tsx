@@ -3,7 +3,6 @@ import { Paper, Typography, Stack, Fab, Tabs, Tab, TableContainer, Table, TableH
 import { Add as AddIcon } from '@mui/icons-material';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import { useSearchParams } from 'react-router';
-import { useAmi } from '../components/ami';
 
 const extensionRows = [
     { id: 1, extension: '1001', displayName: 'Front Desk', username: 'ext1001', context: 'from-internal', status: 'Enabled' },
@@ -24,8 +23,6 @@ export default function ExtensionsPage() {
 
     const [extensions, setExtensions] = React.useState(extensionRows);
     const [trunks, setTrunks] = React.useState(trunkRows);
-
-    const { manager: ami, error: amiError } = useAmi();
 
     React.useEffect(() => {
         if (amiError) {
