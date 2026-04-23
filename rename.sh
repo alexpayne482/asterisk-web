@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Rename the project and update all references to the old name
-templateAppName="aStar"
-templateModuleName="astar"
+templateAppName="asterisk web"
+templateModuleName="asterisk-web"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <new_app_name>"

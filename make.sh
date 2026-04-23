@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -ex
 
-appname="astar"
+appname="asterisk-web"
 publish=${PUBLISH:-0}
 deploy=${DEPLOY:-0}
 buildweb=${BUILD_WEB:-1}
@@ -64,10 +64,10 @@ if [ $builddocker -ne 0 ]; then
     # docker-compose -f docker/docker-compose.yaml --project-directory . up -d
     # docker-compose -f docker/docker-compose.yaml --project-directory . up --build
 
-    # docker load -i ~/astar-docker-0.1.13.tar.gz
-    # sed -i -e 's/image: astar:.*/image: astar:0.1.13/g' docker-compose.yaml
+    # docker load -i ~/asterisk-web-docker-0.1.13.tar.gz
+    # sed -i -e 's/image: asterisk-web:.*/image: asterisk-web:0.1.13/g' docker-compose.yaml
     # sudo docker-compose up -d
-    # VER=0.1.13 && docker load -i ~/astar-docker-$VER.tar.gz && sed -i -e "s/image: astar:.*/image: astar:$VER/g" docker-compose.yaml && sudo docker-compose up -d
+    # VER=0.1.13 && docker load -i ~/asterisk-web-docker-$VER.tar.gz && sed -i -e "s/image: asterisk-web:.*/image: asterisk-web:$VER/g" docker-compose.yaml && sudo docker-compose up -d
 fi
 
 if [ $publish -ne 0 ]; then

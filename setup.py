@@ -20,7 +20,7 @@ def getRequirements(fileName):
         return [line.strip() for line in rf if line.strip() and not line.startswith("#")]
 
 
-moduleName = "astar"
+moduleName = "asterisk-web"
 
 setuptools.setup (
     name = moduleName,

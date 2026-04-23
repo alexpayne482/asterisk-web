@@ -33,7 +33,7 @@ if [ "$1" == "test" ]; then
     shift
     python test.py "$@"
 else
-    python -m astar "$@"
+    python -m asterisk-web "$@"
 fi
 
 # Deactivate virtual environment
