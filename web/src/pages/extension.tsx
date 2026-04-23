@@ -24,29 +24,6 @@ export default function ExtensionsPage() {
     const [extensions, setExtensions] = React.useState(extensionRows);
     const [trunks, setTrunks] = React.useState(trunkRows);
 
-    React.useEffect(() => {
-        if (amiError) {
-            console.warn('AMI unavailable:', amiError);
-        }
-    }, [amiError]);
-
-    React.useEffect(() => {
-        if (!ami) {
-            return;
-        }
-
-        const handleExtensionUpdate = (event: any) => {
-            console.log('Received extension update event:', event);
-            // Here you would typically fetch the updated list of extensions from the server
-            // For this example, we'll just log the event
-        }
-        ami.on('extensionUpdate', handleExtensionUpdate);
-
-        return () => {
-            ami.off('extensionUpdate', handleExtensionUpdate);
-        };
-    }, [ami]);
-
     const [newExtension, setNewExtension] = React.useState({
         extension: '',
         displayName: '',
