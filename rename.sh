@@ -2,7 +2,7 @@
 
 # Rename the project and update all references to the old name
 templateAppName="asterisk web"
-templateModuleName="asterisk-web"
+templateModuleName="asterisk_web"
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <new_app_name>"
