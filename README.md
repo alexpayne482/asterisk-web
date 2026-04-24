@@ -1,4 +1,4 @@
 # asterisk web
 
-Template for python with web UI projects
+[[[ WORK IN PROGRESS - only some mockups for now ]]]
 

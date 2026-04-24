@@ -1,0 +1,3 @@
+prune */__pycache__
+include requirements.txt
+recursive-include asterisk_web/www *
