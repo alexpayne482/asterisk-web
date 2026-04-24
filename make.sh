@@ -5,7 +5,6 @@ appname="asterisk_web"
 publish=${PUBLISH:-0}
 deploy=${DEPLOY:-0}
 buildweb=${BUILD_WEB:-1}
-builddocker=${BUILD_DOCKER:-${publish}}
 
 version=$(cat VERSION)
 if [ $publish -ne 0 ]; then
@@ -49,27 +48,6 @@ ln -sf $appname-$version.tar.gz dist/$appname-latest.tar.gz || { echo "error cre
 echo "App build complete: $appname-$version"
 echo "App saved to dist/$appname-$version.tar.gz"
 
-# build docker image
-if [ $builddocker -ne 0 ]; then
-    echo "Building Docker image for $appname v$version"
-    docker build -t $appname:$version --platform linux/amd64/v2 -f docker/Dockerfile . || { echo "error building docker image"; exit 1; }
-    docker tag $appname:$version $appname:latest
-    echo "Docker image build complete: $appname:$version, $appname:latest"
-
-    docker save $appname:$version -o dist/$appname-docker-$version.tar.gz || { echo "error saving docker image"; exit 1; }
-    ln -sf $appname-docker-$version.tar.gz dist/$appname-docker-latest.tar.gz || { echo "error creating symlink for latest version docker image"; exit 1; }
-    echo "Docker image saved to dist/$appname-docker-$version.tar.gz"
-
-    # docker import dist/$appname-docker-latest.tar.gz
-    # docker-compose -f docker/docker-compose.yaml --project-directory . up -d
-    # docker-compose -f docker/docker-compose.yaml --project-directory . up --build
-
-    # docker load -i ~/asterisk_web-docker-0.1.13.tar.gz
-    # sed -i -e 's/image: asterisk_web:.*/image: asterisk_web:0.1.13/g' docker-compose.yaml
-    # sudo docker-compose up -d
-    # VER=0.1.13 && docker load -i ~/asterisk_web-docker-$VER.tar.gz && sed -i -e "s/image: asterisk_web:.*/image: asterisk_web:$VER/g" docker-compose.yaml && sudo docker-compose up -d
-fi
-
 if [ $publish -ne 0 ]; then
     echo "Publishing v$version"
     if [ -n "$(git tag -l "v$version")" ]; then
@@ -79,13 +57,9 @@ if [ $publish -ne 0 ]; then
     git add .
     git commit -m "build v$version"
 
-    # Gitea publish
-    # assets=" --asset dist/$appname-$version.tar.gz"
-    # if [ $builddocker -ne 0 ]; then
-    #     assets+=" --asset dist/$appname-docker-$version.tar.gz"
-    #     assets+=" --asset docker/docker-compose.yaml"
-    # fi
-    # tea releases create --tag v$version --target main -t v$version $assets || { echo "error creating release on GitHub"; exit 1; }
+    # GitHub publish
+    assets=" --asset dist/$appname-$version.tar.gz"
+    gh release create v$version $assets || { echo "error creating release on GitHub"; exit 1; }
 
     # Push to git
     git push origin main || { echo "error pushing to git"; exit 1; }
