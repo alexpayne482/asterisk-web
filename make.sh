@@ -58,8 +58,8 @@ if [ $publish -ne 0 ]; then
     git commit -m "build v$version"
 
     # GitHub publish
-    assets=" --asset dist/$appname-$version.tar.gz"
-    gh release create v$version $assets || { echo "error creating release on GitHub"; exit 1; }
+    assets=" dist/$appname-$version.tar.gz"
+    gh release create v$version --generate-notes $assets || { echo "error creating release on GitHub"; exit 1; }
 
     # Push to git
     git push origin main || { echo "error pushing to git"; exit 1; }
