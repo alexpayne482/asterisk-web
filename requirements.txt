@@ -4,3 +4,4 @@ requests
 Flask
 Flask-Cors
 #Flask-PyMongo
+asterisk-ami

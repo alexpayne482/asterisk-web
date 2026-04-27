@@ -74,22 +74,9 @@ export function Layout() {
     }, [location]);
 
     return (
-        // <DashboardLayout
-        //     defaultSidebarCollapsed={true}
-        //     sidebarWidth={140}
-        //     slots={{
-        //         sidebarFooter: ({ mini }: SidebarFooterProps) => (
-        //             <Typography variant="caption" sx={{ m: 1, whiteSpace: 'nowrap', overflow: 'hidden' }}>
-        //                 {mini ? `v${APP_VERSION}` : `© ${new Date().getFullYear()} asterisk web v${APP_VERSION}`}
-        //             </Typography>
-        //         ),
-        //     }}
-        // >
-        //     <Outlet />
-        // </DashboardLayout>
         <Stack direction="column">
             <AppBar position="static" color="default" elevation={1} sx={{ flexShrink: 0, backgroundColor: 'background.var1' }}>
-                <Toolbar variant="dense">
+                <Toolbar variant="dense" sx={{ height: 56 }}>
                     <Stack direction="row" spacing={2} alignItems="center" sx={{ width: '100%' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <LogoIcon size={28} color="#fdd835" />

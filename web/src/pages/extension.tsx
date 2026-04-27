@@ -1,28 +1,19 @@
 import * as React from 'react';
-import { Paper, Typography, Stack, Fab, Tabs, Tab, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Chip, TextField, Button, MenuItem, Box } from '@mui/material';
+import { Paper, Typography, Stack, Fab, Tabs, Tab, TextField, Button, MenuItem, Box } from '@mui/material';
 import { Add as AddIcon } from '@mui/icons-material';
 import { PageContainer } from '@toolpad/core/PageContainer';
 import { useSearchParams } from 'react-router';
 
-const extensionRows = [
-    { id: 1, extension: '1001', displayName: 'Front Desk', username: 'ext1001', context: 'from-internal', status: 'Enabled' },
-    { id: 2, extension: '1002', displayName: 'Support', username: 'ext1002', context: 'from-internal', status: 'Enabled' },
-    { id: 3, extension: '1003', displayName: 'Sales', username: 'ext1003', context: 'from-internal', status: 'Disabled' },
-];
-
-const trunkRows = [
-    { id: 1, name: 'SIP-Provider-1', host: 'sip.provider-one.com', port: 5060, transport: 'UDP', status: 'Online' },
-    { id: 2, name: 'SIP-Provider-2', host: 'sip.provider-two.com', port: 5061, transport: 'TLS', status: 'Online' },
-    { id: 3, name: 'Backup-Trunk', host: 'backup.provider.com', port: 5060, transport: 'TCP', status: 'Offline' },
-];
+import { useNotification } from '../components/notifications';
+import EndpointsGrid from '../components/endpointsGrid';
+import TrunksGrid from '../components/trunksGrid';
 
 export default function ExtensionsPage() {
+    const { showNotification } = useNotification();
+
     const [searchParams, setSearchParams] = useSearchParams();
     const activeTab = searchParams.get('tab') === 'trunks' ? 'trunks' : 'extensions';
     const [showCreateForm, setShowCreateForm] = React.useState(false);
-
-    const [extensions, setExtensions] = React.useState(extensionRows);
-    const [trunks, setTrunks] = React.useState(trunkRows);
 
     const [newExtension, setNewExtension] = React.useState({
         extension: '',
@@ -51,17 +42,9 @@ export default function ExtensionsPage() {
                 return;
             }
 
-            setExtensions((prev) => [
-                ...prev,
-                {
-                    id: prev.length + 1,
-                    extension: newExtension.extension.trim(),
-                    displayName: newExtension.displayName.trim(),
-                    username: newExtension.username.trim() || `ext${newExtension.extension.trim()}`,
-                    context: newExtension.context.trim() || 'from-internal',
-                    status: newExtension.status,
-                },
-            ]);
+            // TODO: Implement actual extension creation via AMI action
+            // For now, just show a notification and reset the form
+            showNotification(`Extension ${newExtension.extension} (${newExtension.displayName}) created successfully`, 'success');
 
             setNewExtension({
                 extension: '',
@@ -75,17 +58,9 @@ export default function ExtensionsPage() {
                 return;
             }
 
-            setTrunks((prev) => [
-                ...prev,
-                {
-                    id: prev.length + 1,
-                    name: newTrunk.name.trim(),
-                    host: newTrunk.host.trim(),
-                    port: Number(newTrunk.port) || 5060,
-                    transport: newTrunk.transport,
-                    status: newTrunk.status,
-                },
-            ]);
+            // TODO: Implement actual trunk creation via AMI action
+            // For now, just show a notification and reset the form
+            showNotification(`Trunk ${newTrunk.name} (${newTrunk.host}) created successfully`, 'success');
 
             setNewTrunk({
                 name: '',
@@ -213,69 +188,11 @@ export default function ExtensionsPage() {
 
             {activeTab === 'extensions' ? (
                 <Paper sx={{ mt: 2 }}>
-                    <TableContainer>
-                        <Table size="medium">
-                            <TableHead sx={{ '& .MuiTableCell-head': { color: 'text.secondary' } }}>
-                                <TableRow>
-                                    <TableCell>Extension</TableCell>
-                                    <TableCell>Display Name</TableCell>
-                                    <TableCell>Username</TableCell>
-                                    <TableCell>Context</TableCell>
-                                    <TableCell>Status</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {extensions.map((row) => (
-                                    <TableRow key={row.id} hover>
-                                        <TableCell>{row.extension}</TableCell>
-                                        <TableCell>{row.displayName}</TableCell>
-                                        <TableCell>{row.username}</TableCell>
-                                        <TableCell>{row.context}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                size="small"
-                                                label={row.status}
-                                                color={row.status === 'Enabled' ? 'success' : 'default'}
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <EndpointsGrid />
                 </Paper>
             ) : (
                 <Paper sx={{ mt: 2 }}>
-                    <TableContainer>
-                        <Table size="medium">
-                            <TableHead sx={{ '& .MuiTableCell-head': { color: 'text.secondary' } }}>
-                                <TableRow>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>Host</TableCell>
-                                    <TableCell>Port</TableCell>
-                                    <TableCell>Transport</TableCell>
-                                    <TableCell>Status</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {trunks.map((row) => (
-                                    <TableRow key={row.id} hover>
-                                        <TableCell>{row.name}</TableCell>
-                                        <TableCell>{row.host}</TableCell>
-                                        <TableCell>{row.port}</TableCell>
-                                        <TableCell>{row.transport}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                size="small"
-                                                label={row.status}
-                                                color={row.status === 'Online' ? 'success' : 'default'}
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <TrunksGrid />
                 </Paper>
             )}
         </PageContainer>

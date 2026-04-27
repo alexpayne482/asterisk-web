@@ -11,3 +11,5 @@ _sdir = os.path.dirname(os.path.realpath(__file__))
 # _cwd = os.getcwd()
 
 _def_server_port = 8288
+_def_ami_uri = 'admin@localhost:5038'
+_def_ari_uri = 'admin@localhost:8088'

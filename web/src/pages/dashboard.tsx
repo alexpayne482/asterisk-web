@@ -9,10 +9,11 @@ import {
 } from '@mui/icons-material';
 import { PageContainer } from '@toolpad/core/PageContainer';
 
-const serverOnline = true;
-const onlineEndpoints = 4;
-const totalEndpoints = 6;
-const systemHealth = 'Good';
+import { useNotification } from '../components/notifications';
+import { useAri } from '../components/ari';
+import { formatUptime } from '../components/utils';
+
+
 const callHistory = [
     { id: 1, from: '1001', to: '1002', time: '09:12', duration: '00:02:31', type: 'Answered', active: true },
     { id: 2, from: '1003', to: '1001', time: '09:45', duration: '00:00:00', type: 'Missed', active: false },
@@ -41,6 +42,40 @@ const callHistory = [
 ];
 
 export default function DashboardPage() {
+    const { showNotification } = useNotification();
+    const [status, _, error] = useAri('asterisk/info');
+    const [health] = React.useState('Good');
+    const [endpoints] = useAri('endpoints');
+    const [onlineEndpoints, setOnlineEndpoints] = React.useState(0);
+    const [totalEndpoints, setTotalEndpoints] = React.useState(0);
+    const [uptime, setUptime] = React.useState('Unknown');
+
+    // call History should be fetched from CDR or similar endpoint, but for demo purposes we use static data
+
+    React.useEffect(() => {
+        if (error) {
+            showNotification(`${error}`, 'error');
+        }
+    }, [error, showNotification]);
+
+    React.useEffect(() => {
+        console.log('status:', status);
+        const update = () => setUptime(formatUptime(status?.status?.startup_time));
+
+        update();
+        const timerId = window.setInterval(update, 1000);
+        return () => window.clearInterval(timerId);
+    }, [status]);
+
+    React.useEffect(() => {
+        console.log('endpoints:', endpoints);
+        if (endpoints) {
+            setOnlineEndpoints(endpoints.filter((ep: { state: string }) => ep.state != 'offline').length);
+            setTotalEndpoints(endpoints.length);
+        }
+    }, [endpoints]);
+
+
     const renderCallTypeIcon = (type: string) => {
         if (type === 'Missed') {
             return <CallMissedIcon sx={{ color: 'error.main' }} />;
@@ -56,14 +91,19 @@ export default function DashboardPage() {
             {/* Dashboard summary cards */}
             <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                 <Paper sx={{ p: 2, flex: 1 }}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
                     <Typography variant="overline" color="text.secondary">
                         Asterisk Server
                     </Typography>
+                    <Typography variant="overline" color="text.secondary">
+                        {status?.system?.version || 'Unknown Version'}
+                    </Typography>
+                    </Stack>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 0.5, mb: 1 }}>
                         <Typography variant="h5">
-                            {serverOnline ? 'Online' : 'Offline'}
+                            {status ? 'Online' : 'Offline'}
                         </Typography>
-                        <TaskAltIcon sx={{ color: serverOnline ? 'success.main' : 'error.main', fontSize: 32 }} />
+                        <TaskAltIcon sx={{ color: status ? 'success.main' : 'error.main', fontSize: 32 }} />
                     </Stack>
                 </Paper>
 
@@ -80,14 +120,19 @@ export default function DashboardPage() {
                 </Paper>
 
                 <Paper sx={{ p: 2, flex: 1 }}>
-                    <Typography variant="overline" color="text.secondary">
-                        System Health
-                    </Typography>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                        <Typography variant="overline" color="text.secondary">
+                            System Health
+                        </Typography>
+                        <Typography variant="overline" color="text.secondary">
+                            UP {uptime}
+                        </Typography>
+                    </Stack>
                     <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mt: 0.5, mb: 1 }}>
                         <Typography variant="h5">
-                            {systemHealth}
+                            {health}
                         </Typography>
-                        <TaskAltIcon sx={{ color: systemHealth === 'Good' ? 'success.main' : 'error.main', fontSize: 32 }} />
+                        <TaskAltIcon sx={{ color: health === 'Good' ? 'success.main' : 'error.main', fontSize: 32 }} />
                     </Stack>
                 </Paper>
             </Stack>
