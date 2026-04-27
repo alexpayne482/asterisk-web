@@ -21,9 +21,15 @@ function getDisplayName(endpointDetails?: EndpointDetails): string {
 
 export default function EndpointsGrid() {
     const { showNotification } = useNotification();
-    const [endpoints] = useAri('endpoints');
-    const [_, __, amiError, fetchEndpointDetails] = useAmiAction('PJSIPShowEndpoint', { autoInvoke: false }, undefined);
+    const [endpoints, _, error] = useAri('endpoints');
+    const [__, ___, amiError, fetchEndpointDetails] = useAmiAction('PJSIPShowEndpoint', { autoInvoke: false }, undefined);
     const [endpointDetails, setEndpointDetails] = React.useState<Record<string, EndpointDetails>>({});
+
+    React.useEffect(() => {
+        if (amiError || error) {
+            showNotification(`${amiError || error}`, 'error');
+        }
+    }, [amiError, error, showNotification]);
 
     const endpointsGridColumns = React.useMemo<GridColDef[]>(() => [
         { field: 'extension', headerName: 'Extension', flex: 1, minWidth: 140 },
@@ -61,12 +67,6 @@ export default function EndpointsGrid() {
             };
         });
     }, [endpoints, endpointDetails]);
-
-    React.useEffect(() => {
-        if (amiError) {
-            showNotification(`${amiError}`, 'error');
-        }
-    }, [amiError]);
 
     React.useEffect(() => {
         const list = Array.isArray(endpoints) ? endpoints : [];

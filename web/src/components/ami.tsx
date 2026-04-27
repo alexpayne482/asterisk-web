@@ -32,9 +32,11 @@ export function useAmiAction(action: string, options?: UseAmiActionOptions, para
     const invoke = useCallback(async (invokeParams?: Record<string, string>): Promise<AmiResponse | null> => {
         setLoading(true);
         setError(null);
+        let requestUrl = '';
         try {
             const url = `${baseURL}/ami/action/${action}`;
             const merged = { ...(params || {}), ...(invokeParams || {}) };
+            requestUrl = url.toString();
             // console.log('Invoking AMI action:', action, 'baseURL:', baseURL, 'params:', merged);
 
             const res = await fetch(url, {
@@ -53,8 +55,8 @@ export function useAmiAction(action: string, options?: UseAmiActionOptions, para
             setData(json.data || null);
             return json;
         } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            console.error('AMI action error:', msg);
+            const msg = 'AMI error: ' + (err instanceof Error ? err.message : String(err)) + ' [' + requestUrl + ']';
+            console.error(msg);
             setError(msg);
             return null;
         } finally {

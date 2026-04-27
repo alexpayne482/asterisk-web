@@ -19,12 +19,14 @@ export function useAri(path: string, params?: Record<string, string>): UseAriRes
     const invoke = useCallback(async (invokeParams?: Record<string, string>): Promise<object | null> => {
         setLoading(true);
         setError(null);
+        let requestUrl = '';
         try {
             const url = new URL(`${baseURL}/ari/${path}`);
             const merged = { ...params, ...invokeParams };
             Object.entries(merged).forEach(([k, v]) => url.searchParams.set(k, v));
+            requestUrl = url.toString();
 
-            const res = await fetch(url.toString(), { method: 'GET' });
+            const res = await fetch(requestUrl, { method: 'GET' });
             if (!res.ok) {
                 throw new Error(`HTTP ${res.status}: ${res.statusText}`);
             }
@@ -32,8 +34,8 @@ export function useAri(path: string, params?: Record<string, string>): UseAriRes
             setData(json || null);
             return json;
         } catch (err) {
-            const msg = err instanceof Error ? err.message : String(err);
-            console.error('AMI action error:', msg);
+            const msg = 'ARI error: ' + (err instanceof Error ? err.message : String(err)) + ' [' + requestUrl + ']';
+            console.error(msg);
             setError(msg);
             return null;
         } finally {
