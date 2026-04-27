@@ -77,7 +77,7 @@ class AMIClientWrapper(threading.Thread):
         self.connected = False
 
     def event_listener(self, event, **kwargs):
-        log.info('AMI Event: {}'.format(event))
+        log.debug('AMI Event: {}'.format(event))
 
     def action(self, action, timeout=10, **kwargs):
         if not self.connected:
@@ -113,7 +113,7 @@ class AMIClientWrapper(threading.Thread):
 
         self._ami_client.add_event_listener(_event_listener)
 
-        log.info('Sending AMI action: {} {}'.format(action, kwargs))
+        log.debug('Sending AMI action: {} {}'.format(action, kwargs))
         f = self._ami_client.send_action(SimpleAction(action, **kwargs))
         if f.response.is_error():
             log.error('AMI action {} error: {}'.format(action, f.response))
@@ -142,7 +142,7 @@ class AMIClientWrapper(threading.Thread):
         if events:
             data['events'] = list(filter(lambda e: str(e.get('ActionID') or e.get('ActionId') or e.get('actionid')) == str(action_id), events)) if action_id else events
 
-        log.info('Received AMI complete response: {} {} -> {}'.format(action, action_id, data))
+        log.debug('Received AMI complete response: {} {} -> {}'.format(action, action_id, data))
         return {
             'success': True,
             'action': action,

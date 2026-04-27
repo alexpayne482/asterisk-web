@@ -69,7 +69,6 @@ class App(object, metaclass=Singleton):
 
     @app.route('/api/v1/ami/action/<action>', methods=['GET', 'POST'])
     def api_action(action):
-        log.info('Received API request for AMI action: {}'.format(action))
         params = {}
         if request.method == 'POST' and request.is_json:
             params = request.get_json()
